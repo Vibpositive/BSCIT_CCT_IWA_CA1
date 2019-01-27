@@ -18,7 +18,7 @@ export class Link {
   @Column()
   public title!: string;
 
-  @ManyToOne(type => User, (user: User) => user.links )
+  @ManyToOne(type => User, (user: User) => user.link )
   @JoinColumn()
   // @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   public user!: User;

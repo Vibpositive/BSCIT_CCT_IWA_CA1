@@ -3,6 +3,7 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from "t
 import { User } from "./user";
 import { Link } from "./link";
 
+// TODO: fk cascade
 @Entity()
 export class Comment {
   @PrimaryGeneratedColumn()

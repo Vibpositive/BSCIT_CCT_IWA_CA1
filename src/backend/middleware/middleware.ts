@@ -8,13 +8,16 @@ export function authMiddleware(
     next: express.NextFunction
 ) {
 
+    /*
+    
     //// Add the user ID to the HTTP request object so we can access it from the NEXT request handler
     (req as any).userId = 1;
     // Invoke NEXT request handler
     next();
+    /**/
 
     /*
-
+    */
     // Read token signature from environment variables
     const AUTH_SECRET = process.env.AUTH_SECRET;
     // Read token from request headers
@@ -40,5 +43,5 @@ export function authMiddleware(
             }
         }
     }
-    */
+    /**/
 }

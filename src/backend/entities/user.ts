@@ -14,7 +14,7 @@ export class User {
   public password!: string;
   
   @OneToMany(() => Link, (link: Link) => link.user )
-  public links: Link[];
+  public link: Link[];
 
   @OneToMany(type => Comment, comment => comment.user)
   public comment!: Comment[];

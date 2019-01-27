@@ -18,7 +18,7 @@ export function getHandlers(userRepo: Repository<User>) {
     const getUserById = (req: express.Request, res: express.Response) => {
         (async () => {
             const id = req.params.id;
-            const user = await userRepo.findOne(id);
+            const user = await userRepo.findOne({ id: id }, { relations: ["comment", "vote", "link"] });
 
             if(!user){
                 res.status(404).send("Not Found")
@@ -41,7 +41,7 @@ export function getHandlers(userRepo: Repository<User>) {
                     res.status(400).send("Bad request");
                 } else {
                     const user = await userRepository.save(newUser);
-                    res.json({ ok: "ok" }).send();
+                    res.json({ user: user.email}).send();
                 }
             }
         })();
@@ -60,9 +60,8 @@ export function getUserController() {
     const router = express.Router();
     const handlers = getHandlers(userRepository);
     
-    router.get("/:id", handlers.getUserById);
-    
     router.post("/", handlers.createuser);
+    router.get("/:id", handlers.getUserById);
     
     return router;
 }

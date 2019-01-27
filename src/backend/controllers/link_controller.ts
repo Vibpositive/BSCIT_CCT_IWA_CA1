@@ -25,8 +25,8 @@ export function getHandlers(linkRepository: Repository<any>) {
     
     const getLinkById = (req: express.Request, res: express.Response) => {
         (async () => {
-            const id = req.params.id;
-            const users = await linkRepository.findOne({id: id}, { relations: ["comment"]});
+            const userId = req.params.id;
+            const users = await linkRepository.findOne({ id: userId}, { relations: ["comment"]});
             res.json(users);
         })();
     };
@@ -44,6 +44,9 @@ export function getHandlers(linkRepository: Repository<any>) {
             const newLink = req.body;
             const userId = (req as any).userId;
             const link = { user: { id: userId }, ...newLink};
+
+            console.log("(req as any).userId");
+            console.log((req as any).userId);
             
             const result = joi.validate(newLink, linkDetailSchema);
             
