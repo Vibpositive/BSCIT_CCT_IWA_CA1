@@ -12,13 +12,7 @@ export class User {
   public email!: string;
   @Column()
   public password!: string;
-
-  /*
-  @OneToMany(type => Link, link => link.user)
-  public links!: Link[];
-  /**/
-
-  // @OneToMany(() => Link, (link: Link) => link.user, { cascade: ["insert", "update", "remove"], eager: true })
+  
   @OneToMany(() => Link, (link: Link) => link.user )
   public links: Link[];
 

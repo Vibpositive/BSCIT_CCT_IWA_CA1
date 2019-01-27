@@ -67,7 +67,7 @@ export function getHandlers(linkRepository: Repository<any>) {
     // DELETE /api/v1/links/:id requires user authentication and takes the id of a link via the
     // request URL.
     // A user should not be able to delete a link if he is not the owner of the link.
-    const deleteLinkViaId = (req: express.Request, res: express.Response) => {
+    const beleteById = (req: express.Request, res: express.Response) => {
         (async () => {
             const user_id = (req as any).userId;
             
@@ -97,7 +97,7 @@ export function getHandlers(linkRepository: Repository<any>) {
     // requires user authentication and takes the id of a link via
     // the request URL.
     // A user should not be able to vote the same link multiple times.
-    const upvoteLink = (req: express.Request, res: express.Response) => {
+    const upvoteLinkById = (req: express.Request, res: express.Response) => {
         (async () => {
             const id = req.params.id;
             const userId = (req as any).userId;
@@ -142,7 +142,7 @@ export function getHandlers(linkRepository: Repository<any>) {
     // POST /api/v1/links/:id/downvote
     // requires user authentication and takes the id of a link
     // via the request URL. A user should not be able to vote the same link multiple times.
-    const downvoteLink = (req: express.Request, res: express.Response) => {
+    const downvoteLinkById = (req: express.Request, res: express.Response) => {
         (async () => {
             const id = req.params.id;
             const userId = (req as any).userId;
@@ -185,12 +185,12 @@ export function getHandlers(linkRepository: Repository<any>) {
     };
     
     return {
-        getAllLinksHandler: getAllLinksHandler,
-        getLinkById: getLinkById,
-        createLink: createLink,
-        deleteLinkViaId: deleteLinkViaId,
-        upvoteLink: upvoteLink,
-        downvoteLink: downvoteLink,
+        getAllLinksHandler  : getAllLinksHandler,
+        getLinkById         : getLinkById,
+        createLink          : createLink,
+        beleteById          : beleteById,
+        upvoteLinkById      : upvoteLinkById,
+        downvoteLinkById    : downvoteLinkById,
     };
 }
 
@@ -206,10 +206,10 @@ export function getLinkController() {
     router.get("/:id",              handlers.getLinkById);
     
     router.post("/",                authMiddleware, handlers.createLink);
-    router.delete("/:id",           authMiddleware, handlers.deleteLinkViaId);
+    router.delete("/:id",           authMiddleware, handlers.beleteById);
     
-    router.post("/:id/upvote",      authMiddleware, handlers.upvoteLink);
-    router.post("/:id/downvote",    authMiddleware, handlers.downvoteLink);
+    router.post("/:id/upvote",      authMiddleware, handlers.upvoteLinkById);
+    router.post("/:id/downvote",    authMiddleware, handlers.downvoteLinkById);
     
     return router;
 }

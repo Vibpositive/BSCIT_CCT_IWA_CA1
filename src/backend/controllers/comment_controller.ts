@@ -15,11 +15,12 @@ import * as express from "express";
 import { getCommentRepository } from "../repositories/comment_repository";
 import { getLinkRepository } from "../repositories/link_repository";
 import { getUserRepository } from "../repositories/user_repository";
-// import { Repository } from "typeorm";
-import { Comment} from "../entities/comment"
 import { authMiddleware } from "../middleware/middleware";
 import * as joi from "joi";
-import { getConnection } from "typeorm";
+
+// import { Comment} from "../entities/comment"
+// import { Repository } from "typeorm";
+// import { getConnection } from "typeorm";
 
 // export function getHandlers(commentRepository: Repository<any>){
 export function getHandlers(){
