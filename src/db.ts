@@ -14,6 +14,8 @@
 import { createConnection } from "typeorm";
 import { Comment } from "./backend/entities/comment";
 import { User } from "./backend/entities/user";
+import { Link } from "./backend/entities/link";
+import { Vote } from "./backend/entities/vote";
 
 export async function createDbConnection() {
   const DATABASE_HOST = process.env.DATABASE_HOST;
@@ -39,7 +41,9 @@ export async function createDbConnection() {
     database: DATABASE_DB,
     entities: [
       Comment,
-      User
+      User,
+      Link,
+      Vote
     ],
     synchronize: true
   });

@@ -7,6 +7,8 @@ import { getUserController } from "./backend/controllers/user_controller";
 import { getAuthController } from "./backend/controllers/auth_controller";
 
 import { createDbConnection } from "./db";
+import { getLinkRepository } from "./backend/repositories/link_repository";
+import { getLinkController } from "./backend/controllers/link_controller";
 export async function createApp() {
   const ENDPOINT = process.env.ENDPOINT;
 
@@ -20,45 +22,27 @@ export async function createApp() {
     res.send("This is the home page!");
   });
 
+  /*
+  */
+  app.all('*', printUrl);
+
+  function printUrl(req: express.Request, res:any, next:any) {
+    console.log(req.method + " on: " + req.path);
+    next();
+  }
+  /**/
+
+  const linksController = getLinkController();
+  app.use(ENDPOINT + "links", linksController);
+
   const commentsController = getCommentController();
   app.use(ENDPOINT + "comments", commentsController);
-
+  
   const usersController = getUserController();
   app.use(ENDPOINT + "users", usersController);
-
+  
   const authController = getAuthController();
   app.use(ENDPOINT + "auth", authController);
-
-  // app.listen(APP_PORT, () => {
-  //     console.log(`The server is running in port ${APP_PORT}!`);
-  // });
+  
   return app;
 }
-// (async () => {
-
-//     const APP_PORT = process.env.APP_PORT;
-//     const ENDPOINT = process.env.ENDPOINT;
-
-//     await createDbConnection();
-//     const app = express();
-
-//     app.use(bodyParser.json());
-//     app.use(bodyParser.urlencoded({ extended: true }));
-
-//     app.get("/", (req: express.Request, res: express.Response) => {
-//         res.send("This is the home page!");
-//     });
-
-//     const commentsController = getCommentController();
-//     app.use(ENDPOINT + "comments", commentsController);
-
-//     const usersController = getUserController();
-//     app.use(ENDPOINT + "users", usersController);
-
-//     const authController = getAuthController();
-//     app.use(ENDPOINT + "auth", authController);
-
-//     app.listen(APP_PORT, () => {
-//         console.log(`The server is running in port ${APP_PORT}!`);
-//     });
-// })();
