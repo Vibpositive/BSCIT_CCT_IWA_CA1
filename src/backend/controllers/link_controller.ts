@@ -72,6 +72,7 @@ export function getHandlers(linkRepository: Repository<any>) {
     // A user should not be able to delete a link if he is not the owner of the link.
     const beleteById = (req: express.Request, res: express.Response) => {
         (async () => {
+            console.log("DELETE INSIDE CONTROLLER")
             const user_id = (req as any).userId;
             
             const id = req.params.id;
@@ -91,6 +92,8 @@ export function getHandlers(linkRepository: Repository<any>) {
                     console.log(error)
                     res.status(500).send("Internal Server Error")
                 }
+            }else{
+                res.status(404).send("Not Found")
             }
             
         })();

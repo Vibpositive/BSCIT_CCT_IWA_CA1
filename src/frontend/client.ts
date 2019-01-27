@@ -7,11 +7,8 @@ const APP_PORT = process.env.APP_PORT;
 let token = "";
 
 async function login(email:String = "random@email.com", password:String  = "secret"){
-    const controller = "auth";
-    const method = "POST";
-    const endpoint = "login";
     
-    const url = `http://localhost:${APP_PORT}/api/v1/${controller}/${endpoint}`;
+    const url = `http://localhost:${APP_PORT}/api/v1/auth/login`;
     
     const data = {
         email: email,
@@ -20,7 +17,7 @@ async function login(email:String = "random@email.com", password:String  = "secr
     
     try {
         const response = await fetch(url,{
-            method: method,
+            method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
@@ -40,17 +37,13 @@ async function login(email:String = "random@email.com", password:String  = "secr
 /*
 */
 (async () => {
-    const controller = "links";
-    const method = "GET";
-    const endpoint = "";
-    
-    const url = `http://localhost:${APP_PORT}/api/v1/${controller}/${endpoint}`;
+    const url = `http://localhost:${APP_PORT}/api/v1/links/`;
     
     try {
         const response = await fetch(
             url,
             {
-                method: method
+                method: "GET"
             }
         );
         const json = await response.json();
@@ -68,16 +61,13 @@ async function login(email:String = "random@email.com", password:String  = "secr
 
 // POST /api/v1/links requires user authentication and takes a link in the request body. It should return the new link
 (async () => {
-    const controller = "links";
-    const method = "POST";
-    const endpoint = "";
 
     const data = {
         url: "some url",
         title: "some title"
     };
 
-    const url = `http://localhost:${APP_PORT}/api/v1/${controller}/${endpoint}`;
+    const url = `http://localhost:${APP_PORT}/api/v1/links/`;
 
     const token = await login();
 
@@ -86,7 +76,7 @@ async function login(email:String = "random@email.com", password:String  = "secr
         try {
             const response = await fetch(url,
                 {
-                    method: method,
+                    method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                         "x-auth-token": token.token
@@ -120,17 +110,14 @@ async function login(email:String = "random@email.com", password:String  = "secr
 /*
 */
 (async () => {
-    const controller = "links";
-    const method = "GET";
-    const endpoint = "1";
 
-    const url = `http://localhost:${APP_PORT}/api/v1/${controller}/${endpoint}`;
+    const url = `http://localhost:${APP_PORT}/api/v1/links/1`;
 
     try {
         const response = await fetch(
             url,
             {
-                method: method
+                method: "GET"
             }
         );
         const json = await response.json();
@@ -145,15 +132,66 @@ async function login(email:String = "random@email.com", password:String  = "secr
     }
 })();
 /**/
-/*
 
+/*
+    DELETES A LINK
 */
 (async () => {
-    const controller = "links";
-    const method = "DELETE";
-    const endpoint = "32";
     
-    const url = `http://localhost:${APP_PORT}/api/v1/${controller}/${endpoint}`;
+    const url = `http://localhost:${APP_PORT}/api/v1/links/45`;
+
+    const token = await login();
+    
+    if (token) {
+        try {    
+            const response = await fetch(url,
+                {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "x-auth-token": token.token
+                    }
+                }
+            );
+            
+            console.log("Deletes a link");
+            /*
+            */
+            try {
+                const json = await response.json();
+                console.log("\n");
+                console.log(json);
+            } catch (jsonError) {
+                console.log(response.statusText);
+            }
+            /**/
+
+            console.log("\n");
+            console.log("=======================================================================================");
+            console.log("\n");
+
+        } catch (error) {
+            console.log("response 2");
+            console.log(error.message);
+        }
+    }else{
+        console.log("missing token");
+    }
+
+})();
+/**/
+
+
+/*
+    UPVOTES A LINK
+*
+(async () => {
+    
+    const url = `http://localhost:${APP_PORT}/api/v1/links/1/upvote`;
+
+    console.log("url");
+    console.log(url);
+    return;
 
     const token = await login();
 
@@ -162,21 +200,19 @@ async function login(email:String = "random@email.com", password:String  = "secr
         try {
             const response = await fetch(url,
                 {
-                    method: method,
+                    method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                         "x-auth-token": token.token
                     }
                 }
             );
-            console.log("Deleetes a link");
+            console.log("Deletes a link");
             try {
                 const json = await response.json();
                 console.log("\n");
                 console.log(json);
             } catch (jsonError) {
-                console.log(jsonError.message);
-                console.log("response 1");
                 console.log(response.statusText);
             }
 

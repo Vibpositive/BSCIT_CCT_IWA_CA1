@@ -46,3 +46,5 @@ export async function createApp() {
   
   return app;
 }
+// TODO: update all responses code to json
+// {code: errorCode, reason: reasonText}
