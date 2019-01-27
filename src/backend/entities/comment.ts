@@ -11,11 +11,11 @@ export class Comment {
   @Column("text")
   public comment!: string;
 
-  @ManyToOne(type => User, user => user.id)
+  @ManyToOne(type => User, user => user.comment)
   @JoinColumn()
   public user!: User;
 
-  @ManyToOne(type => Link, link => link.id)
+  @ManyToOne(type => Link, link => link.comment)
   @JoinColumn()
   public link!: Link;
 }

@@ -76,6 +76,7 @@ export function getHandlers(linkRepository: Repository<any>) {
             
             if (link){
                 try {
+                    // TODO: update to remove
                     await linkRepository.delete({id: id, user: {id: user_id}});
                     
                     if (user_id == link.user.id){
