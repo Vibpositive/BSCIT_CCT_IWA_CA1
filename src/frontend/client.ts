@@ -184,16 +184,16 @@ async function login(email:String = "random@email.com", password:String  = "secr
 
 /*
     UPVOTES A LINK
-*
+*/
 (async () => {
     
     const url = `http://localhost:${APP_PORT}/api/v1/links/1/upvote`;
 
     console.log("url");
     console.log(url);
-    return;
-
+    
     const token = await login();
+    
 
     if (token) {
 
@@ -207,7 +207,7 @@ async function login(email:String = "random@email.com", password:String  = "secr
                     }
                 }
             );
-            console.log("Deletes a link");
+            console.log("UPVOTES a link");
             try {
                 const json = await response.json();
                 console.log("\n");
@@ -225,6 +225,8 @@ async function login(email:String = "random@email.com", password:String  = "secr
             console.log(error.message);
         }
     }
+    /*
+    */
 
 })();
 /**/
