@@ -178,8 +178,9 @@ export function getHandlers(linkRepository: Repository<any>) {
                             .set({ vote: false })
                             .where("id = :id", { id: vote.id })
                             .execute();
-                        res.json(vote);
                         vote.vote = false;
+                        
+                        res.json(vote);
                     } catch (error) {
                         console.log(error);
                         res.status(500).send("Internal server error");

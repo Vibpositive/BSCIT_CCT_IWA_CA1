@@ -184,16 +184,16 @@ async function login(email:String = "random@email.com", password:String  = "secr
 
 /*
     UPVOTES A LINK
-*/
+*
 (async () => {
-    
-    const url = `http://localhost:${APP_PORT}/api/v1/links/1/upvote`;
+
+    const url = `http://localhost:${APP_PORT}/api/v1/links/47/upvote`;
 
     console.log("url");
     console.log(url);
-    
+
     const token = await login();
-    
+
 
     if (token) {
 
@@ -208,6 +208,49 @@ async function login(email:String = "random@email.com", password:String  = "secr
                 }
             );
             console.log("UPVOTES a link");
+            try {
+                const json = await response.json();
+                console.log("\n");
+                console.log(json);
+            } catch (jsonError) {
+                console.log(response.statusText);
+            }
+
+            console.log("\n");
+            console.log("=======================================================================================");
+            console.log("\n");
+
+        } catch (error) {
+            console.log("response 2");
+            console.log(error.message);
+        }
+    }
+    
+})();
+
+/**/
+
+/*
+    DOWNVOTES A LINK
+*/
+(async () => {
+
+    const url = `http://localhost:${APP_PORT}/api/v1/links/47/downvote`;
+    const token = await login();
+
+    if (token) {
+
+        try {
+            const response = await fetch(url,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "x-auth-token": token.token
+                    }
+                }
+            );
+            console.log("DOWNVOTES a link");
             try {
                 const json = await response.json();
                 console.log("\n");
