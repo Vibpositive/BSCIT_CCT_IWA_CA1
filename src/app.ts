@@ -1,4 +1,4 @@
-//app.ts
+require("dotenv").config();
 import express from "express";
 import * as bodyParser from "body-parser";
 
@@ -38,9 +38,7 @@ export async function createApp() {
   app.use(ENDPOINT + "users", usersController);
   
   const authController = getAuthController();
-  app.use(ENDPOINT + "auth", authController);
+require("dotenv").config();
   
   return app;
 }
-// TODO: update all responses code to json
-// {code: errorCode, reason: reasonText}
