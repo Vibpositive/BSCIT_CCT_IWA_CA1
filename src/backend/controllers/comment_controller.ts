@@ -19,25 +19,24 @@ export function getHandlers(){
             linkId: joi.number().greater(0).required()
         }).required();
         
-        (async () => {
+        
+        const result = joi.validate(req.body, commentDetailSchema);
+        
+        if (result.error) {
+            res.status(400).json({ code: 400, message: "Bad request", reason: result.error.message });
+        }else{
             
-            const result = joi.validate(req.body, commentDetailSchema);
-            
-            const userId = (req as any).userId;
-            const commentBody = req.body;
-            
-            const user = await userRepository.findOne({ id: userId });
-            const link = await linkRepository.findOne({ id: commentBody.linkId });
-            
-            if (result.error) {
-                res.status(400).json({ code: 400, message: "Bad request", reason: result.error.message });
-            }else{
+            (async () => {
+                
+                const userId = (req as any).userId
+                const user = await userRepository.findOne({ id: userId });
+                const link = await linkRepository.findOne({ id: req.body.linkId });
                 
                 if (link && user) {
                     try {
                         // use the following format if repository is of type repository
-                        // const newComment = { comment: commentBody.comment, user: { id: userId }, link: { id: commentBody.linkId} };
-                        const newComment = { comment: commentBody.comment, user: user, link: link };
+                        // const newComment = { comment: req.body.comment, user: { id: userId }, link: { id: req.body.linkId} };
+                        const newComment = { comment: req.body.comment, user: user, link: link };
                         const comment = await commentRepository.save(newComment);
                         res.json(comment);
                         
@@ -48,9 +47,10 @@ export function getHandlers(){
                 }else{
                     res.status(404).json({ code: 404, message: "Not Found", reason: "Link or User Not Found" });
                 }
-            }
-            
-        })();
+                    
+            })();
+        }
+
     };
     
     const updateComment = (req: express.Request, res: express.Response) => {
@@ -62,27 +62,22 @@ export function getHandlers(){
         
         const result = joi.validate(req.body, commentDetailSchema);
         
-        (async () => {
-            
-            const userId = (req as any).userId;
-            const commentBody = req.body;
-            const commentId = req.params.id;
-            
-            const user      = await userRepository.findOne({ id: userId });
-            //Finds a comment only and if only that comment has been created by the current user
-            const comment = await commentRepository.findOne({ id: commentId, user: { id: userId }});
-            
-            if (result.error) {
-                console.log(result)
-                res.status(400).send("Bad request");
-            } else {
+        if (result.error) {
+            res.status(400).json({ code: 400, message: "Bad request", reason: result.error.message });
+        } else {
+            (async () => {
+                
+                const userId = (req as any).userId;
+                const commentId = req.params.id;
+                const user      = await userRepository.findOne({ id: userId });
+                const comment = await commentRepository.findOne({ id: commentId, user: { id: userId }});
                 
                 if (comment && user) {
                     try {
                         
                         // use the following format if repository is of type repository
-                        // const newComment = { comment: commentBody.comment, user: { id: userId }, link: { id: commentBody.linkId} };
-                        const newComment = commentBody.comment;
+                        // const newComment = { comment: req.body.comment, user: { id: userId }, link: { id: req.body.linkId} };
+                        const newComment = req.body.comment;
                         comment.comment = newComment;
                         
                         const updatedComment = await commentRepository.save(comment);
@@ -91,14 +86,15 @@ export function getHandlers(){
                         
                     } catch (error) {
                         console.log(error);
-                        res.status(500).send("Internal Server error")
+                        res.status(500).json({ code: 500, message: "Internal Server error", reason: "" });
                     }
                 } else {
-                    res.status(404).send("Not Found");
+                    res.status(404).json({ code: 404, message: "Not Found", reason: "Wrong parameters" });
                 }
-            }
-            
-        })();
+                
+            })();
+        }
+        
     }
     
     const deleteComment = (req: express.Request, res: express.Response) => {
@@ -116,10 +112,10 @@ export function getHandlers(){
                     res.json(deletedEntry);
                 } catch (error) {
                     console.log(error);
-                    res.status(500).send("Internal Server error");
+                    res.status(500).json({ code: 500, message: "Internal Server error", reason: "" });
                 }
             } else {
-                res.status(400).send("Bad Request");
+                res.status(404).json({ code: 404, message: "Not Found", reason: "Wrong parameters" });
             }
             
         })();
