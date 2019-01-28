@@ -26,8 +26,13 @@ export function getHandlers(linkRepository: Repository<any>) {
     const getLinkById = (req: express.Request, res: express.Response) => {
         (async () => {
             const userId = req.params.id;
-            const users = await linkRepository.findOne({ id: userId}, { relations: ["comment"]});
-            res.json(users);
+            const link = await linkRepository.findOne({ id: userId}, { relations: ["comment"]});
+
+            if(link){
+                res.json(link);
+            }else{
+                res.status(404).json({ code: 404, message: "Not Found", reason: "Link not found" });
+            }
         })();
     };
     
@@ -40,39 +45,32 @@ export function getHandlers(linkRepository: Repository<any>) {
         })
         .required();
         
-        (async () => {
-            const newLink = req.body;
-            const userId = (req as any).userId;
-            const link = { user: { id: userId }, ...newLink};
+        const result = joi.validate(req.body, linkDetailSchema);
 
-            console.log("(req as any).userId");
-            console.log((req as any).userId);
-            
-            const result = joi.validate(newLink, linkDetailSchema);
-            
-            if (result.error) {
-                res.status(400).send("Bad request");
-            } else {
+        if (result.error) {
+            res.status(400).json({ code: 400, message: "Bad request", reason: result.error.message });
+        } else {
+            (async () => {
+                
+                const userId = (req as any).userId;
+                const link = { user: { id: userId }, ...req.body};
                 
                 try {
                     await linkRepository.save(link);
                     res.json(link).send();
                 }
-                catch (e) {
-                    console.log(e)
-                    res.status(500).send("Internal Server Error")
+                catch (error) {
+                    console.log(error);
+                    res.status(500).json({ code: 500, message: "Internal Server Error", reason: "" });
                 }
-            }
-        })();
-        
-        
+            })();
+        }
     };
     
     const beleteById = (req: express.Request, res: express.Response) => {
         (async () => {
-            console.log("DELETE INSIDE CONTROLLER")
+
             const user_id = (req as any).userId;
-            
             const id = req.params.id;
             const link = await linkRepository.findOne({ id: id }, {relations: ["user"]});
             
@@ -82,16 +80,16 @@ export function getHandlers(linkRepository: Repository<any>) {
                     await linkRepository.delete({id: id, user: {id: user_id}});
                     
                     if (user_id == link.user.id){
-                        res.json(link).send();
+                        res.json(link);
                     }else{
-                        res.status(400).send("Bad request");
+                        res.status(400).json({ code: 400, message: "Bad request", reason: "You are not the creator" });
                     }
                 } catch (error) {
                     console.log(error)
-                    res.status(500).send("Internal Server Error")
+                    res.status(500).json({ code: 500, message: "Internal Server Error", reason: "" });
                 }
             }else{
-                res.status(404).send("Not Found")
+                res.status(404).json({ code: 404, message: "Not Found", reason: "Link Not Found" });
             }
             
         })();
@@ -104,23 +102,24 @@ export function getHandlers(linkRepository: Repository<any>) {
             
             const link = await linkRepository.findOne({ id: id });
             const user = await userRepository.findOne({ id: userId });
-            const vote = await voteRepository.findOne({ user: { id: userId }, link: { id: link.id } });
-            const newVote = { vote: true, user: user, link: link };
             
             if (!link || !user) {
-                res.status(400).send("Bad Request");
+                res.status(400).json({ code: 400, message: "Bad Request", reason: "Wrong Parameters" });
             }else{
+
+                const vote = await voteRepository.findOne({ user: { id: userId }, link: { id: link.id } });
+                
                 if(!vote){
                     try {
-                        await voteRepository.save(newVote);
-                        res.json(newVote);
+                        const upvotedLink = { vote: true, user: user, link: link };
+                        await voteRepository.save(upvotedLink);
+                        res.json(upvotedLink);
                     } catch (error) {
                         console.log(error);
-                        res.status(500).send("Internal server error");
+                        res.status(500).json({ code: 500, message: "Internal server error", reason: "" });
                     }
                 }else{
                     try {
-                        
                         await getConnection()
                             .createQueryBuilder()
                             .update(Vote)
@@ -131,7 +130,7 @@ export function getHandlers(linkRepository: Repository<any>) {
                         res.json(vote);
                     } catch (error) {
                         console.log(error);
-                        res.status(500).send("Internal server error");
+                        res.status(500).json({ code: 500, message: "Internal server error", reason: "" });
                     }
                 }
             }
@@ -146,23 +145,25 @@ export function getHandlers(linkRepository: Repository<any>) {
 
             const link = await linkRepository.findOne({ id: id });
             const user = await userRepository.findOne({ id: userId });
-            const vote = await voteRepository.findOne({ user: { id: userId }, link: { id: link.id } });
-            const newVote = { vote: false, user: user, link: link };
-
+            
+            
             if (!link || !user) {
-                res.status(400).send("Bad Request");
+                res.status(400).json({ code: 400, message: "Bad Request", reason: "Wrong Parameters" });
             } else {
+
+                const vote = await voteRepository.findOne({ user: { id: userId }, link: { id: link.id } });
+
                 if (!vote) {
                     try {
-                        await voteRepository.save(newVote);
-                        res.json(newVote);
+                        const downvotedLink = { vote: false, user: user, link: link };
+                        await voteRepository.save(downvotedLink);
+                        res.json(downvotedLink);
                     } catch (error) {
                         console.log(error);
-                        res.status(500).send("Internal server error");
+                        res.status(500).json({ code: 500, message: "Internal server error", reason: "" });
                     }
                 } else {
                     try {
-
                         await getConnection()
                             .createQueryBuilder()
                             .update(Vote)
@@ -174,7 +175,7 @@ export function getHandlers(linkRepository: Repository<any>) {
                         res.json(vote);
                     } catch (error) {
                         console.log(error);
-                        res.status(500).send("Internal server error");
+                        res.status(500).json({ code: 500, message: "Internal server error", reason: "" });
                     }
                 }
             }
