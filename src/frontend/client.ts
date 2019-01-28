@@ -184,7 +184,7 @@ async function login(email:String = "random@email.com", password:String  = "secr
 
 /*
     UPVOTES A LINK
-*
+*/
 (async () => {
 
     const url = `http://localhost:${APP_PORT}/api/v1/links/47/upvote`;
@@ -268,8 +268,88 @@ async function login(email:String = "random@email.com", password:String  = "secr
             console.log(error.message);
         }
     }
-    /*
-    */
+    
+})();
+/**/
+
+
+/*
+    CREATES A USER
+*/
+(async () => {
+
+    const url = `http://localhost:${APP_PORT}/api/v1/users`;
+
+    const data = {
+        email: "newusername@domain.com",
+        password: "secret"
+    };
+    
+    try {
+        const response = await fetch(url,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            }
+        );
+        console.log("CREATES A USER");
+        try {
+            const json = await response.json();
+            console.log("\n");
+            console.log(json);
+        } catch (jsonError) {
+            console.log(response.statusText);
+        }
+
+        console.log("\n");
+        console.log("=======================================================================================");
+        console.log("\n");
+
+    } catch (error) {
+        console.log("response 2");
+        console.log(error.message);
+    }
+    
+})();
+/**/
+
+
+/*
+    GETS A USER BY ID
+*/
+(async () => {
+
+    const url = `http://localhost:${APP_PORT}/api/v1/users/1`;
+    
+    try {
+        const response = await fetch(url,
+            {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }
+        );
+        console.log("GETS A USER BY ID");
+        try {
+            const json = await response.json();
+            console.log("\n");
+            console.log(json);
+        } catch (jsonError) {
+            console.log(response.statusText);
+        }
+
+        console.log("\n");
+        console.log("=======================================================================================");
+        console.log("\n");
+
+    } catch (error) {
+        console.log("response 2");
+        console.log(error.message);
+    }
 
 })();
 /**/
