@@ -1,7 +1,7 @@
 import * as express from "express";
 import { getUserRepository } from "../repositories/user_repository";
 import * as joi from "joi";
-import { authMiddleware } from "../middleware/middleware";
+import { authMiddleware } from "../middleware/auth_middleware";
 
 import { User } from "../entities/user"
 import { Repository } from "typeorm";

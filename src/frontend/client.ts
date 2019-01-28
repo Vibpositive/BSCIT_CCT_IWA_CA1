@@ -450,3 +450,51 @@ async function login(email:String = "random@email.com", password:String  = "secr
 
 })();
 /**/
+
+
+/*
+    DELETES A COMMENT
+*/
+(async () => {
+
+    const url = `http://localhost:${APP_PORT}/api/v1/comments/1`;
+
+    const data = {
+        comment: "Some random comment updateded"
+    };
+
+    const token = await login();
+
+    if (token) {
+        try {
+            const response = await fetch(url,
+                {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "x-auth-token": token.token
+                    },
+                    body: JSON.stringify(data)
+                }
+            );
+            console.log("DELETES A COMMENT");
+            try {
+                const json = await response.json();
+                console.log("\n");
+                console.log(json);
+            } catch (jsonError) {
+                console.log(response.statusText);
+            }
+    
+            console.log("\n");
+            console.log("=======================================================================================");
+            console.log("\n");
+    
+        } catch (error) {
+            console.log("response 2");
+            console.log(error.message);
+        }
+    }
+
+})();
+/**/

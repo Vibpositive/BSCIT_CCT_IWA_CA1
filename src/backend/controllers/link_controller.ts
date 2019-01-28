@@ -7,7 +7,7 @@ import * as joi from "joi";
 
 import { Link } from "../entities/Link"
 import { Repository, getConnection } from "typeorm";
-import { authMiddleware } from "../middleware/middleware";
+import { authMiddleware } from "../middleware/auth_middleware";
 import { Vote } from "../entities/vote";
 
 export function getHandlers(linkRepository: Repository<any>) {
