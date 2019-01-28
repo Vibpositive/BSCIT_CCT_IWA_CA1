@@ -1,13 +1,13 @@
 import * as express from "express";
+import * as joi from "joi";
+
 import { getLinkRepository } from "../repositories/link_repository";
 import { getvoteRepository } from "../repositories/vote_repository";
 import { getUserRepository } from "../repositories/user_repository";
 
-import * as joi from "joi";
-
-import { Link } from "../entities/Link"
 import { Repository, getConnection } from "typeorm";
 import { authMiddleware } from "../middleware/auth_middleware";
+
 import { Vote } from "../entities/vote";
 
 export function getHandlers(linkRepository: Repository<any>) {
@@ -67,9 +67,7 @@ export function getHandlers(linkRepository: Repository<any>) {
         
         
     };
-    // DELETE /api/v1/links/:id requires user authentication and takes the id of a link via the
-    // request URL.
-    // A user should not be able to delete a link if he is not the owner of the link.
+    
     const beleteById = (req: express.Request, res: express.Response) => {
         (async () => {
             console.log("DELETE INSIDE CONTROLLER")
@@ -99,10 +97,6 @@ export function getHandlers(linkRepository: Repository<any>) {
         })();
     };
     
-    // POST /api/v1/links/:id/upvote
-    // requires user authentication and takes the id of a link via
-    // the request URL.
-    // A user should not be able to vote the same link multiple times.
     const upvoteLinkById = (req: express.Request, res: express.Response) => {
         (async () => {
             const id = req.params.id;
@@ -144,10 +138,7 @@ export function getHandlers(linkRepository: Repository<any>) {
             
         })();
     };
-
-    // POST /api/v1/links/:id/downvote
-    // requires user authentication and takes the id of a link
-    // via the request URL. A user should not be able to vote the same link multiple times.
+    
     const downvoteLinkById = (req: express.Request, res: express.Response) => {
         (async () => {
             const id = req.params.id;

@@ -1,7 +1,6 @@
 import * as express from "express";
 import { getUserRepository } from "../repositories/user_repository";
 import * as joi from "joi";
-import { authMiddleware } from "../middleware/auth_middleware";
 
 import { User } from "../entities/user"
 import { Repository } from "typeorm";
@@ -48,20 +47,20 @@ export function getHandlers(userRepo: Repository<User>) {
     };
         
     return {
-        getUserById: getUserById,
-        createuser: createUser
+        getUserById:    getUserById,
+        createuser:     createUser
     };
 }
 
 
 export function getUserController() {
 
-    const userRepository = getUserRepository();
-    const router = express.Router();
-    const handlers = getHandlers(userRepository);
+    const userRepository    = getUserRepository();
+    const router            = express.Router();
+    const handlers          = getHandlers(userRepository);
     
-    router.post("/", handlers.createuser);
-    router.get("/:id", handlers.getUserById);
+    router.post("/",    handlers.createuser);
+    router.get("/:id",  handlers.getUserById);
     
     return router;
 }

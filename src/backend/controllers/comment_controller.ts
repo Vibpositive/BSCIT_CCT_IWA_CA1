@@ -1,16 +1,3 @@
-/**
-* src/backend/controller/comment_controller.ts
-* MIT
-* 
-* long description for the file
-*
-* @summary short description for the file
-* @author Gabriel Oliveira <ras.vibpositive@gmail.com>
-*
-* Created at     : 2019-01-21 15:28:26 
-* Last modified  : 2019-01-21 16:14:04
-*/
-
 import * as express from "express";
 import { getCommentRepository } from "../repositories/comment_repository";
 import { getLinkRepository } from "../repositories/link_repository";
@@ -18,17 +5,11 @@ import { getUserRepository } from "../repositories/user_repository";
 import { authMiddleware } from "../middleware/auth_middleware";
 import * as joi from "joi";
 
-// import { Comment} from "../entities/comment"
-// import { Repository } from "typeorm";
-// import { getConnection } from "typeorm";
-
-// export function getHandlers(commentRepository: Repository<any>){
 export function getHandlers(){
     
     const linkRepository    = getLinkRepository();
     const userRepository    = getUserRepository();
     const commentRepository = getCommentRepository();
-    
     
     const createComment = (req: express.Request, res: express.Response) => {
         
@@ -162,12 +143,6 @@ export function getCommentController() {
     router.post("/",        authMiddleware, handlers.createComment)
     router.patch("/:id",    authMiddleware, handlers.updateComment)
     router.delete("/:id",   authMiddleware, handlers.deleteComment)
-    
-    // PATCH /api/v1/comments/:id
-    // it is private and allows us to edit an existing comment by its
-    // ID. The updated content will be sent in the request body. Users should not be able to
-    // edit comments that they don’t own. An error 400 should be thrown if the user is not the
-    // owner. An error 404 should be thrown if the comment is not found.
     
     return router;
 }
