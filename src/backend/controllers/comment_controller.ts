@@ -15,7 +15,7 @@ import * as express from "express";
 import { getCommentRepository } from "../repositories/comment_repository";
 import { getLinkRepository } from "../repositories/link_repository";
 import { getUserRepository } from "../repositories/user_repository";
-import { authMiddleware } from "../middleware/middleware";
+import { authMiddleware } from "../middleware/auth_middleware";
 import * as joi from "joi";
 
 // import { Comment} from "../entities/comment"
