@@ -20,7 +20,6 @@ export class Link {
 
   @ManyToOne(type => User, (user: User) => user.link )
   @JoinColumn()
-  // @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   public user!: User;
   
   @OneToMany(type => Comment, comment => comment.link)

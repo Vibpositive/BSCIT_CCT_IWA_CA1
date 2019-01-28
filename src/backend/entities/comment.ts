@@ -1,4 +1,3 @@
-// /src/backend/entities/comment.ts.
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from "typeorm";
 import { User } from "./user";
 import { Link } from "./link";
