@@ -16,20 +16,19 @@ export function getAuthController() {
     router.post("/login", (req: any, res: any) => {
         (async () => {
             const userDetails = req.body;
-
             
             joi.validate(userDetails, schema, function (err: any, value: any) {
                 if (err) {
-                    res.status(401).send("Unauthorized");
+                    res.status(401).json({ code: 401, message: "Unauthorized", reason: err.message });
                 } else {
                     (async () => {
                         const match = await userRepository.findOne(userDetails);
                         
                         if (match === undefined) {
-                            res.status(401).send("Unauthorized");
+                            res.status(401).json({ code: 401, message: "Unauthorized", reason: "User not found"});
                         } else {
                             if (AUTH_SECRET === undefined) {
-                                res.status(500).send("Internal error server");
+                                res.status(500).json({ code: 500, message: "Internal error server", reason: "" });
                             } else {
                                 const token = jwt.sign({ id: match.id }, AUTH_SECRET);
                                 res.json({ token: token }).send();
