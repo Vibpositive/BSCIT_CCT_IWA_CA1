@@ -7,7 +7,6 @@ import { getUserController } from "./backend/controllers/user_controller";
 import { getAuthController } from "./backend/controllers/auth_controller";
 
 import { createDbConnection } from "./db";
-import { getLinkRepository } from "./backend/repositories/link_repository";
 import { getLinkController } from "./backend/controllers/link_controller";
 export async function createApp() {
   const ENDPOINT = process.env.ENDPOINT;
@@ -21,17 +20,14 @@ export async function createApp() {
   app.get("/", (req: express.Request, res: express.Response) => {
     res.send("This is the home page!");
   });
-
-  /*
-  */
+  
   app.all('*', printUrl);
 
   function printUrl(req: express.Request, res:any, next:any) {
     console.log(req.method + " on: " + req.path);
     next();
   }
-  /**/
-
+  
   const linksController = getLinkController();
   app.use(ENDPOINT + "links", linksController);
 
