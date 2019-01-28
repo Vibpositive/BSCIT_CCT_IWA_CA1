@@ -30,8 +30,7 @@ export function getHandlers(){
             const link = await linkRepository.findOne({ id: commentBody.linkId });
             
             if (result.error) {
-                console.log(result)
-                res.status(400).send("Bad request");
+                res.status(400).json({ code: 400, message: "Bad request", reason: result.error.message });
             }else{
                 
                 if (link && user) {
@@ -44,11 +43,10 @@ export function getHandlers(){
                         
                     } catch (error) {
                         console.log(error);
-                        res.status(500).send("Internal Server error")
+                        res.status(500).json({ code: 500, message: "Internal Server Error", reason: "" });
                     }
                 }else{
-                    console.log("404 not found")
-                    res.status(404).send("Not Found");
+                    res.status(404).json({ code: 404, message: "Not Found", reason: "Link or User Not Found" });
                 }
             }
             

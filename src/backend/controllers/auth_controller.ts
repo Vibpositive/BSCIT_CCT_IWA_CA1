@@ -17,9 +17,9 @@ export function getAuthController() {
         (async () => {
             const userDetails = req.body;
             
-            joi.validate(userDetails, schema, function (err: any, value: any) {
-                if (err) {
-                    res.status(401).json({ code: 401, message: "Unauthorized", reason: err.message });
+            joi.validate(userDetails, schema, function (error: any, value: any) {
+                if (error) {
+                    res.status(401).json({ code: 401, message: "Unauthorized", reason: error.message });
                 } else {
                     (async () => {
                         const match = await userRepository.findOne(userDetails);
