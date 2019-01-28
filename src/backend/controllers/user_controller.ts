@@ -8,11 +8,6 @@ import { Repository } from "typeorm";
 export function getHandlers(userRepo: Repository<User>) {
 
     const userRepository = getUserRepository();
-
-    const userDetailsSchema = {
-        email: joi.string().email(),
-        password: joi.string()
-    };
     
     const getUserById = (req: express.Request, res: express.Response) => {
         (async () => {
@@ -20,7 +15,7 @@ export function getHandlers(userRepo: Repository<User>) {
             const user = await userRepo.findOne({ id: id }, { relations: ["comment", "vote", "link"] });
 
             if(!user){
-                res.status(404).send("Not Found")
+                res.status(404).json({ code: 404, message: "Bad request", reason: "User not found" });
             }else{
                 res.json(user);
             }
@@ -28,22 +23,28 @@ export function getHandlers(userRepo: Repository<User>) {
     };
 
     const createUser = (req: express.Request, res: express.Response) => {
-        (async () => {
+        
+        const userDetailsSchema = joi
+        .object({
+            password: joi.string().regex(/^[a-zA-Z0-9]{3,30}$/).required(),
+            email: joi.string().email({ minDomainAtoms: 2 }).required()
+        }).required();
 
-            const newUser = req.body;
-            const result = joi.validate(newUser, userDetailsSchema);
+        const result = joi.validate(req.body, userDetailsSchema);
 
-            if (result.error) {
-                res.status(400).send("Bad request");
-            } else {
-                if (!newUser.email || !newUser.password) {
-                    res.status(400).send("Bad request");
-                } else {
-                    const user = await userRepository.save(newUser);
+        if (result.error) {
+            res.status(400).json({ code: 400, message: "Bad request", reason: result.error.message });
+        } else {
+            (async () => {
+
+                try {
+                    const user = await userRepository.save(req.body);
                     res.json({ user: user.email}).send();
+                } catch (error) {
+                    res.status(500).json({ code: 500, message: "Internal Server Error"});
                 }
-            }
-        })();
+            })();
+        }
     };
         
     return {
