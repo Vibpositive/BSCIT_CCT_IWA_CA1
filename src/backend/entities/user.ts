@@ -1,5 +1,3 @@
-// /src/backend/entities/user.ts
-
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm";
 import { Vote } from "./vote";
 import { Link } from "./link";
