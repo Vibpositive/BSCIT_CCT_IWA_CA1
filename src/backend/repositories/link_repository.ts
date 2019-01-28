@@ -1,4 +1,3 @@
-// src/backend/repositories/link_repository.ts
 import { getConnection } from "typeorm";
 import { Link } from "../entities/link";
 
