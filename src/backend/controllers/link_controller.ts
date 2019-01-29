@@ -12,9 +12,6 @@ import { Vote } from "../entities/vote";
 
 export function getHandlers(linkRepository: Repository<any>) {
     
-    // const voteRepository = getvoteRepository();
-    // const userRepository = getUserRepository();
-    
     const getAllLinksHandler = (req: express.Request, res: express.Response) => {
         
         (async () => {

@@ -20,17 +20,6 @@ export async function createApp() {
   app.get("/", (req: express.Request, res: express.Response) => {
     res.json("This is the home page!");
   });
-
-  app.post("/", (req: express.Request, res: express.Response) => {
-    res.json("This is the post home page!");
-  });
-  
-  app.all('*', printUrl);
-
-  function printUrl(req: express.Request, res:any, next:any) {
-    console.log(req.method + " on: " + req.path);
-    next();
-  }
   
   const linksController = getLinkController();
   app.use(ENDPOINT + "links", linksController);
