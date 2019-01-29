@@ -12,8 +12,8 @@ import { Vote } from "../entities/vote";
 
 export function getHandlers(linkRepository: Repository<any>) {
     
-    const voteRepository = getvoteRepository();
-    const userRepository = getUserRepository();
+    // const voteRepository = getvoteRepository();
+    // const userRepository = getUserRepository();
     
     const getAllLinksHandler = (req: express.Request, res: express.Response) => {
         
@@ -57,7 +57,7 @@ export function getHandlers(linkRepository: Repository<any>) {
                 
                 try {
                     await linkRepository.save(link);
-                    res.json(link).send();
+                    res.json(link);
                 }
                 catch (error) {
                     console.log(error);
@@ -67,7 +67,7 @@ export function getHandlers(linkRepository: Repository<any>) {
         }
     };
     
-    const beleteById = (req: express.Request, res: express.Response) => {
+    const deleteByID = (req: express.Request, res: express.Response) => {
         (async () => {
 
             const user_id = (req as any).userId;
@@ -100,6 +100,8 @@ export function getHandlers(linkRepository: Repository<any>) {
             const id = req.params.id;
             const userId = (req as any).userId;
             
+            const userRepository = getUserRepository();
+            
             const link = await linkRepository.findOne({ id: id });
             const user = await userRepository.findOne({ id: userId });
             
@@ -107,6 +109,7 @@ export function getHandlers(linkRepository: Repository<any>) {
                 res.status(400).json({ code: 400, message: "Bad Request", reason: "Wrong Parameters" });
             }else{
 
+                const voteRepository = getvoteRepository();
                 const vote = await voteRepository.findOne({ user: { id: userId }, link: { id: link.id } });
                 
                 if(!vote){
@@ -143,6 +146,8 @@ export function getHandlers(linkRepository: Repository<any>) {
             const id = req.params.id;
             const userId = (req as any).userId;
 
+            const userRepository = getUserRepository();
+
             const link = await linkRepository.findOne({ id: id });
             const user = await userRepository.findOne({ id: userId });
             
@@ -151,6 +156,7 @@ export function getHandlers(linkRepository: Repository<any>) {
                 res.status(400).json({ code: 400, message: "Bad Request", reason: "Wrong Parameters" });
             } else {
 
+                const voteRepository = getvoteRepository();
                 const vote = await voteRepository.findOne({ user: { id: userId }, link: { id: link.id } });
 
                 if (!vote) {
@@ -187,7 +193,7 @@ export function getHandlers(linkRepository: Repository<any>) {
         getAllLinksHandler  : getAllLinksHandler,
         getLinkById         : getLinkById,
         createLink          : createLink,
-        beleteById          : beleteById,
+        deleteByID          : deleteByID,
         upvoteLinkById      : upvoteLinkById,
         downvoteLinkById    : downvoteLinkById,
     };
@@ -199,13 +205,14 @@ export function getLinkController() {
     const linkRepository = getLinkRepository();
     
     const router = express.Router();
+    
     const handlers = getHandlers(linkRepository);
     
     router.get("/",                 handlers.getAllLinksHandler);
     router.get("/:id",              handlers.getLinkById);
     
     router.post("/",                authMiddleware, handlers.createLink);
-    router.delete("/:id",           authMiddleware, handlers.beleteById);
+    router.delete("/:id",           authMiddleware, handlers.deleteByID);
     
     router.post("/:id/upvote",      authMiddleware, handlers.upvoteLinkById);
     router.post("/:id/downvote",    authMiddleware, handlers.downvoteLinkById);

@@ -1,8 +1,9 @@
-import { createConnection } from "typeorm";
 import { Comment } from "./backend/entities/comment";
+
 import { User } from "./backend/entities/user";
 import { Link } from "./backend/entities/link";
 import { Vote } from "./backend/entities/vote";
+import { getConnectionManager, ConnectionManager, Connection } from "typeorm";
 
 export async function createDbConnection() {
   const DATABASE_HOST = process.env.DATABASE_HOST;
@@ -10,16 +11,8 @@ export async function createDbConnection() {
   const DATABASE_USER = process.env.DATABASE_USER;
   const DATABASE_DB = process.env.DATABASE_DB;
   
-  console.log(
-    `
-      host:     ${DATABASE_HOST}
-      password: ${DATABASE_PASSWORD}
-      user:     ${DATABASE_USER}
-      db:       ${DATABASE_DB}
-    `
-  );
-    
-  await createConnection({
+  const connectionManager = getConnectionManager();
+  const connection = connectionManager.create({
     type: "postgres",
     host: DATABASE_HOST,
     port: 5432,
@@ -34,5 +27,6 @@ export async function createDbConnection() {
     ],
     synchronize: true
   });
-}
   
+  await connection.connect();
+}
