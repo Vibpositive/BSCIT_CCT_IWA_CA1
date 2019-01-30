@@ -1,5 +1,6 @@
 import * as express from "express";
 import jwt from "jsonwebtoken";
+import { send_status } from "../../util/error_handler";
 
 export function authMiddleware(
     req: express.Request,
@@ -10,19 +11,18 @@ export function authMiddleware(
     const token = req.headers["x-auth-token"];
 
     if (typeof token !== "string") {
-        res.status(400).json({ code: 400, message: "Bad request", reason: "" });
+        send_status(400, 'token !== "string"', res);
     } else {
         if (AUTH_SECRET === undefined) {
-            res.status(500).json({ code: 500, message: "Internal Server Error", reason: "" });
+            send_status(500, 'AUTH_SECRET === undefined', res);
         } else {
             try {
                 const obj = jwt.verify(token, AUTH_SECRET) as any;
                 (req as any).userId = obj.id;
                 next();
-            } catch (err) {
-                res.status(401).json({ code: 401, message: "Forbidden", reason: "" });
+            } catch (error) {
+                send_status(401, error, res);
             }
         }
     }
-    /**/
 }

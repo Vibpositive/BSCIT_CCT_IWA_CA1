@@ -4,6 +4,7 @@ import * as joi from "joi";
 
 import { User } from "../entities/user"
 import { Repository } from "typeorm";
+import { send_status } from "../../util/error_handler";
 
 export function getHandlers(userRepo: Repository<User>) {
 
@@ -15,7 +16,7 @@ export function getHandlers(userRepo: Repository<User>) {
             const user = await userRepo.findOne({ id: id }, { relations: ["comment", "vote", "link"] });
 
             if(!user){
-                res.status(404).json({ code: 404, message: "Bad request", reason: "User not found" });
+                send_status(404, "User Not Found", res);
             }else{
                 res.json(user);
             }
@@ -33,7 +34,7 @@ export function getHandlers(userRepo: Repository<User>) {
         const result = joi.validate(req.body, userDetailsSchema);
 
         if (result.error) {
-            res.status(400).json({ code: 400, message: "Bad request", reason: result.error.message });
+            send_status(400, result.error.message, res);
         } else {
             (async () => {
 
@@ -41,7 +42,7 @@ export function getHandlers(userRepo: Repository<User>) {
                     const user = await userRepository.save(req.body);
                     res.json({ user: user.email}).send();
                 } catch (error) {
-                    res.status(500).json({ code: 500, message: "Internal Server Error"});
+                    send_status(500, error, res);
                 }
             })();
         }

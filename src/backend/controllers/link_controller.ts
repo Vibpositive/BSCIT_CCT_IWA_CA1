@@ -9,6 +9,7 @@ import { Repository, getConnection } from "typeorm";
 import { authMiddleware } from "../middleware/auth_middleware";
 
 import { Vote } from "../entities/vote";
+import { send_status, codes } from "../../util/error_handler";
 
 export function getHandlers(linkRepository: Repository<any>) {
     
@@ -28,7 +29,7 @@ export function getHandlers(linkRepository: Repository<any>) {
             if(link){
                 res.json(link);
             }else{
-                res.status(404).json({ code: 404, message: "Not Found", reason: "Link not found" });
+                send_status(404, "Link not found", res);
             }
         })();
     };
@@ -45,7 +46,7 @@ export function getHandlers(linkRepository: Repository<any>) {
         const result = joi.validate(req.body, linkDetailSchema);
 
         if (result.error) {
-            res.status(400).json({ code: 400, message: "Bad request", reason: result.error.message });
+            send_status(400, result.error.message, res);
         } else {
             (async () => {
                 
@@ -57,8 +58,7 @@ export function getHandlers(linkRepository: Repository<any>) {
                     res.json(link);
                 }
                 catch (error) {
-                    console.log(error);
-                    res.status(500).json({ code: 500, message: "Internal Server Error", reason: "" });
+                    send_status(500, error, res);
                 }
             })();
         }
@@ -79,14 +79,13 @@ export function getHandlers(linkRepository: Repository<any>) {
                     if (user_id == link.user.id){
                         res.json(link);
                     }else{
-                        res.status(400).json({ code: 400, message: "Bad request", reason: "You are not the creator" });
+                        send_status(400, "You are not the creator", res);
                     }
                 } catch (error) {
-                    console.log(error)
-                    res.status(500).json({ code: 500, message: "Internal Server Error", reason: "" });
+                    send_status(500, error, res);
                 }
             }else{
-                res.status(404).json({ code: 404, message: "Not Found", reason: "Link Not Found" });
+                send_status(404, "Link Not Found", res);
             }
             
         })();
@@ -103,7 +102,7 @@ export function getHandlers(linkRepository: Repository<any>) {
             const user = await userRepository.findOne({ id: userId });
             
             if (!link || !user) {
-                res.status(400).json({ code: 400, message: "Bad Request", reason: "Wrong Parameters" });
+                send_status(400, "Wrong Paramaters", res);
             }else{
 
                 const voteRepository = getvoteRepository();
@@ -115,8 +114,7 @@ export function getHandlers(linkRepository: Repository<any>) {
                         await voteRepository.save(upvotedLink);
                         res.json(upvotedLink);
                     } catch (error) {
-                        console.log(error);
-                        res.status(500).json({ code: 500, message: "Internal server error", reason: "" });
+                        send_status(500, error, res);
                     }
                 }else{
                     try {
@@ -129,8 +127,7 @@ export function getHandlers(linkRepository: Repository<any>) {
                             vote.vote = true;
                         res.json(vote);
                     } catch (error) {
-                        console.log(error);
-                        res.status(500).json({ code: 500, message: "Internal server error", reason: "" });
+                        send_status(500, error, res);
                     }
                 }
             }
@@ -150,7 +147,7 @@ export function getHandlers(linkRepository: Repository<any>) {
             
             
             if (!link || !user) {
-                res.status(400).json({ code: 400, message: "Bad Request", reason: "Wrong Parameters" });
+                send_status(400, "Wrong Paramaters", res);
             } else {
 
                 const voteRepository = getvoteRepository();
@@ -162,8 +159,7 @@ export function getHandlers(linkRepository: Repository<any>) {
                         await voteRepository.save(downvotedLink);
                         res.json(downvotedLink);
                     } catch (error) {
-                        console.log(error);
-                        res.status(500).json({ code: 500, message: "Internal server error", reason: "" });
+                        send_status(500, error, res);
                     }
                 } else {
                     try {
@@ -177,8 +173,7 @@ export function getHandlers(linkRepository: Repository<any>) {
                         
                         res.json(vote);
                     } catch (error) {
-                        console.log(error);
-                        res.status(500).json({ code: 500, message: "Internal server error", reason: "" });
+                        send_status(500, error, res);
                     }
                 }
             }

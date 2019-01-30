@@ -4,6 +4,7 @@ import { getLinkRepository } from "../repositories/link_repository";
 import { getUserRepository } from "../repositories/user_repository";
 import { authMiddleware } from "../middleware/auth_middleware";
 import * as joi from "joi";
+import { send_status } from "../../util/error_handler";
 
 export function getHandlers(){
     
@@ -23,7 +24,9 @@ export function getHandlers(){
         const result = joi.validate(req.body, commentDetailSchema);
         
         if (result.error) {
-            res.status(400).json({ code: 400, message: "Bad request", reason: result.error.message });
+            
+            send_status(400, result.error.message, res);
+
         }else{
             
             (async () => {
@@ -41,11 +44,10 @@ export function getHandlers(){
                         res.json(comment);
                         
                     } catch (error) {
-                        console.log(error);
-                        res.status(500).json({ code: 500, message: "Internal Server Error", reason: "" });
+                        send_status(500, error, res);
                     }
                 }else{
-                    res.status(404).json({ code: 404, message: "Not Found", reason: "Link or User Not Found" });
+                    send_status(404, link == null ? "link is null" : "user is null", res);
                 }
                     
             })();
@@ -62,8 +64,9 @@ export function getHandlers(){
         
         const result = joi.validate(req.body, commentDetailSchema);
         
+
         if (result.error) {
-            res.status(400).json({ code: 400, message: "Bad request", reason: result.error.message });
+            send_status(400, result.error.message, res);
         } else {
             (async () => {
                 
@@ -85,11 +88,10 @@ export function getHandlers(){
                         res.json(updatedComment);
                         
                     } catch (error) {
-                        console.log(error);
-                        res.status(500).json({ code: 500, message: "Internal Server error", reason: "" });
+                        send_status(500, error, res);
                     }
                 } else {
-                    res.status(404).json({ code: 404, message: "Not Found", reason: "Wrong parameters" });
+                    send_status(404, comment == null ? "comment is null" : "user is null", res);
                 }
                 
             })();
@@ -111,16 +113,14 @@ export function getHandlers(){
                     const deletedEntry = await commentRepository.remove(comment);
                     res.json(deletedEntry);
                 } catch (error) {
-                    console.log(error);
-                    res.status(500).json({ code: 500, message: "Internal Server error", reason: "" });
+                    send_status(500, error, res);
                 }
             } else {
-                res.status(404).json({ code: 404, message: "Not Found", reason: "Wrong parameters" });
+                send_status(404, comment == null ? "comment is null" : "user is null", res);
             }
             
         })();
     };
-    
     
     return {
         createComment: createComment,
