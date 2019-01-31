@@ -10,11 +10,11 @@ export class Vote {
   @Column()
   public vote!: boolean;
 
-  @ManyToOne(type => User, user => user.vote, { primary: true })
+  @ManyToOne(type => User, user => user.vote, { primary: true})
   @JoinColumn()
   user!: User;
 
-  @ManyToOne(type => Link, link => link.id, { primary: true })
+  @ManyToOne(type => Link, link => link.id, { primary: true, onDelete: 'CASCADE' })
   @JoinColumn()
   link!: Link;
 }
